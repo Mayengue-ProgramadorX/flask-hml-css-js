@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Checkout</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <ul class="list-group mb-4">
+            {% for item in cart_items.values() %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" style="width: 50px; height: 50px; margin-right: 10px;">
+                        <div>
+                            <h5 class="mb-1">{{ item.name }}</h5>
+                            <p class="mb-1">{{ item.quant }} x ${{ item.price }} = ${{ item.total_price }}</p>
+                        </div>
+                    </div>
+                    <span class="badge badge-primary badge-pill">${{ item.total_price }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="d-flex justify-content-between">
+            <h3>Total: ${{ total_price }}</h3>
+            <form action="{{ url_for('process_payment') }}" method="post">
+                <button type="submit" class="btn btn-primary">Checkout</button>
+            </form>
+
+            <!-- Logout Button -->
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

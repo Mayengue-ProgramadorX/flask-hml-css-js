@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h2>Payment</h2>
+            <div class="col-sm-12">
+                <div>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul class="flashes">
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                <form action="{{ url_for('process_payment') }}" method="post">
+                    <h3>Items in Cart</h3>
+                    <ul>
+                        {% for code, item in cart_items.items() %}
+                            <li>{{ item['name'] }} - {{ item['quant'] }} x ${{ item['price'] }} = ${{ item['total_price'] }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h3>Total: ${{ total_price }}</h3>
+                    <button type="submit" class="btn btn-primary">Process Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

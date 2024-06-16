@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store</title>
+    <!-- Linking Bootstrap CSS for styling -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Linking Bootstrap JS for interactive components -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <!-- Linking jQuery for DOM manipulation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Linking custom styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Linking Font Awesome CSS for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Displaying flash messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h1>Products</h1>
+    <ul>
+        <!-- Looping through products and displaying them -->
+        {% for product in query_products %}
+            <li>
+                <img src="{{ url_for('static', filename='images/' ~ product.image) }}" alt="{{ product.name }}">
+                <h2>{{ product.name }}</h2>
+                <p>Price: ${{ product.price }}</p>
+                <!-- Form to add product to the cart -->
+                <form action="{{ url_for('add_product') }}" method="post">
+                    <input type="hidden" name="code" value="{{ product.code }}">
+                    <input type="number" name="quant" value="1" min="1">
+                    {% if session.user_id %}
+                        <button type="submit">Add to Cart</button>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Login to Add to Cart</a>
+                    {% endif %}
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Displaying checkout and logout options if user is logged in -->
+    {% if session.user_id %}
+        <a href="{{ url_for('checkout') }}">Checkout</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+    {% endif %}
+    
+    <!-- Displaying cart items if any are present -->
+    {% if session.cart_item %}
+        <h2>Cart</h2>
+        <ul>
+            {% for code, item in session.cart_item.items() %}
+                <li class="cart-item">
+                    <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
+                    <div class="cart-item-details">
+                        <h3>{{ item.name }}</h3>
+                        <p>Quantity: {{ item.quant }}</p>
+                        <p>Total: ${{ item.total_price }}</p>
+                    </div>
+                    <!-- Form to remove product from the cart -->
+                    <form action="{{ url_for('remove_product', code=item.code) }}" method="post">
+                        <input type="hidden" name="code" value="{{ item.code }}">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <p>Total Items: {{ session.all_total_quant }}</p>
+        <p>Total Price: ${{ session.all_total_price }}</p>
+        <a href="{{ url_for('empty_cart') }}">Empty Cart</a>
+    {% endif %}
+</body>
+</html>
+
