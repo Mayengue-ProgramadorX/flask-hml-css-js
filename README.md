@@ -2,7 +2,7 @@
 
 ## Video Demo
 
-[Watch the Flask Shopping Cart App demonstration video](/static/video/nome_do_video.mp4)
+[Watch the Flask Shopping Cart App demonstration video](/static/appshopping.mp4.mp4)
 
 ## Overview
 

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from cs50 import SQL
 from werkzeug.security import generate_password_hash, check_password_hash
 import stripe
+import os
 from dotenv import load_dotenv
 
 # Load environment variables from a .env file
